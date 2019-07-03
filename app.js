@@ -1,3 +1,5 @@
+//Dotenv
+require('dotenv').config();
 const bodyParser = require("body-parser"),
 	  expressSanitizer = require("express-sanitizer"),
 	  methodOverride = require("method-override"),
@@ -11,7 +13,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer()); //this line have to be after bodyParser
 app.use(express.static("public"));
 app.set("view engine", "ejs");
-mongoose.connect("mongodb://localhost:27017/restful_blog_app", {
+
+var url = process.env.DATABASEURL || "mongodb://localhost:27017/myBlog";
+mongoose.connect(url, {
 	useNewUrlParser: true,
 	useCreateIndex: true //Maybe we don't need this line??
 }).then(() => {
@@ -99,7 +103,6 @@ app.put("/blogs/:id", function(req, res) {
 			res.redirect("/blogs/" + req.params.id);
 		}
 	});
-	//res.send("update route");
 });
 
 // DELETE ROUTE
@@ -114,6 +117,6 @@ app.delete("/blogs/:id", function(req, res) {
 	
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, process.env.IP, () => {
 	console.log('The Blog server has started');
 });
